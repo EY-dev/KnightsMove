@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_knightsmove" default="compile.module.knightsmove">
+  <dirname property="module.knightsmove.basedir" file="${ant.file.module_knightsmove}"/>
+  
+  <property name="module.jdk.home.knightsmove" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.knightsmove" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.knightsmove" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.knightsmove" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="knightsmove.output.dir" value="${module.knightsmove.basedir}/out/production/KnightsMove"/>
+  <property name="knightsmove.testoutput.dir" value="${module.knightsmove.basedir}/out/test/KnightsMove"/>
+  
+  <path id="knightsmove.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="knightsmove.module.production.classpath">
+    <path refid="${module.jdk.classpath.knightsmove}"/>
+  </path>
+  
+  <path id="knightsmove.runtime.production.module.classpath">
+    <pathelement location="${knightsmove.output.dir}"/>
+  </path>
+  
+  <path id="knightsmove.module.classpath">
+    <path refid="${module.jdk.classpath.knightsmove}"/>
+    <pathelement location="${knightsmove.output.dir}"/>
+  </path>
+  
+  <path id="knightsmove.runtime.module.classpath">
+    <pathelement location="${knightsmove.testoutput.dir}"/>
+    <pathelement location="${knightsmove.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.knightsmove">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.knightsmove">
+    <patternset refid="excluded.from.module.knightsmove"/>
+  </patternset>
+  
+  <path id="knightsmove.module.sourcepath">
+    <dirset dir="${module.knightsmove.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.knightsmove" depends="compile.module.knightsmove.production,compile.module.knightsmove.tests" description="Compile module KnightsMove"/>
+  
+  <target name="compile.module.knightsmove.production" depends="register.custom.compilers" description="Compile module KnightsMove; production classes">
+    <mkdir dir="${knightsmove.output.dir}"/>
+    <javac2 destdir="${knightsmove.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.knightsmove}/javac">
+      <compilerarg line="${compiler.args.knightsmove}"/>
+      <bootclasspath refid="knightsmove.module.bootclasspath"/>
+      <classpath refid="knightsmove.module.production.classpath"/>
+      <src refid="knightsmove.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.knightsmove"/>
+    </javac2>
+    
+    <copy todir="${knightsmove.output.dir}">
+      <fileset dir="${module.knightsmove.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.knightsmove.tests" depends="register.custom.compilers,compile.module.knightsmove.production" description="compile module KnightsMove; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.knightsmove" description="cleanup module">
+    <delete dir="${knightsmove.output.dir}"/>
+    <delete dir="${knightsmove.testoutput.dir}"/>
+  </target>
+</project>
